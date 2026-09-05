@@ -1,5 +1,6 @@
 // app.js — Genie Lamp frontend
-import { personalityMap, personalityAccents } from "./personalities.js";
+import { personalityMap, personalityAccents, eyeStyles } from "./personalities.js";
+import { createEyeRig } from "./eyeRig.js";
 
 const POWER_DURATION_MS = 3 * 60 * 1000; // 3 minutes (intentional deviation from 5, user-requested)
 
@@ -121,6 +122,7 @@ function checkPowerStatus() {
 
 function expirePowers() {
   appState.powerActive = false;
+  removeEyeRig(); // stop any active eye animation before the farewell overlay covers the screen
   const line = farewellLines[Math.floor(Math.random() * farewellLines.length)];
   speak(line);
   farewellText.textContent = line;
@@ -138,6 +140,7 @@ function resetToLampScreen() {
   appState.swipeCount = 0;
   appState.currentObject = null;
   appState.conversationHistory = [];
+  removeEyeRig();
   swipeDots.forEach((dot) => dot.classList.remove("swipe-dot--lit"));
   chatLog.innerHTML = "";
   chatInput.value = "";
@@ -204,14 +207,46 @@ function addUserLine(text) {
   addBubble("user", text);
 }
 
-// ---- TTS ----
+// ---- TTS (now tied to the eye rig's mouth while it's active) ----
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.rate = 1.0;
   utterance.pitch = 1.0;
+
+  if (currentEyeRig) {
+    utterance.onstart = () => currentEyeRig?.startTalking();
+    utterance.onend = () => currentEyeRig?.stopTalking();
+    utterance.onerror = () => currentEyeRig?.stopTalking();
+  }
+
   window.speechSynthesis.speak(utterance);
+}
+
+// ---- Eye rig (Phase 5 polish — the animated "it's alive" eyes) ----
+const cameraFrameEl = document.getElementById("camera-frame");
+let currentEyeRig = null;
+
+function removeEyeRig() {
+  if (currentEyeRig) {
+    currentEyeRig.destroy();
+    currentEyeRig = null;
+  }
+}
+
+async function spawnEyeRig(personalityKey, eyePosition) {
+  removeEyeRig(); // only one object's eyes on screen at a time
+
+  if (!eyePosition || !cameraFrameEl) return; // no coordinates from Gemini this turn — skip silently
+
+  const style = eyeStyles[personalityKey] || eyeStyles.gremlin;
+  const screenX = eyePosition.x * cameraFrameEl.clientWidth;
+  const screenY = eyePosition.y * cameraFrameEl.clientHeight;
+
+  currentEyeRig = createEyeRig(cameraFrameEl, style, screenX, screenY);
+  await currentEyeRig.wakeUp();
+  currentEyeRig?.startIdlePersonality();
 }
 
 // ---- API calls ----
@@ -266,6 +301,7 @@ async function identifyObjectWithPersonality() {
   chatInput.disabled = false;
   chatSend.disabled = false;
 
+  await spawnEyeRig(personalityKey, result.eyePosition);
   addObjectLine(result.responseText);
 }
 

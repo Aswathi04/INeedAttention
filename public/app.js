@@ -28,6 +28,16 @@ const replyInput = document.getElementById("replyInput");
 
 let timerInterval = null;
 
+// --- Speech output (Tech Spec Section 9) ---
+function speak(text) {
+  if (!("speechSynthesis" in window)) return; // graceful degrade, text still displays
+  window.speechSynthesis.cancel(); // stop any currently speaking utterance first
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  window.speechSynthesis.speak(utterance);
+}
+
 // --- Hardcoded farewell lines (Tech Spec Section 8) - no API call, must fire instantly ---
 const farewellLines = [
   "Poof. Your three minutes are up, genie. The objects have gone back to ignoring you.",
@@ -174,6 +184,10 @@ function addLogLine(role, text) {
   const line = document.createElement("p");
   line.textContent = `${role === "user" ? "You" : role === "object" ? "Object" : ""}: ${text}`;
   conversationLog.appendChild(line);
+
+  if (role === "object") {
+    speak(text); // caption shows immediately above; speech plays alongside, per Tech Spec Section 9
+  }
 }
 
 document.getElementById("captureBtn").addEventListener("click", async () => {

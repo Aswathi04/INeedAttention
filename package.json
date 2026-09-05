@@ -3,5 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Useless Projects 3.0 - talk to inanimate objects for 5 minutes"
+  "scripts": {
+    "dev": "vercel dev"
+  }
 }

@@ -17,8 +17,10 @@ ${template}
 
 This is your opening line to a human who just pointed a magic lamp-given power at you. Make it outrageous and instantly funny.
 
+Also estimate roughly where the object's "face" should appear — a natural spot for eyes, like its visual center or most prominent surface. Give this as normalized coordinates where 0,0 is the top-left of the image and 1,1 is the bottom-right.
+
 Return ONLY valid JSON in this exact format, no markdown fences, no extra text:
-{"object_label": "<short label, 1-3 words>", "response_text": "<your in-character response, 2-3 sentences>"}
+{"object_label": "<short label, 1-3 words>", "response_text": "<your in-character response, 2-3 sentences>", "eye_position": {"x": <0-1>, "y": <0-1>}}
 `.trim();
 }
 
@@ -48,6 +50,16 @@ Respond in 2-3 sentences, in character. Return ONLY valid JSON, no markdown fenc
 function parseGeminiJson(rawText) {
   const cleaned = rawText.replace(/```json|```/g, "").trim();
   return JSON.parse(cleaned);
+}
+
+// Gemini's coordinate grounding is approximate at best, and occasionally malformed
+// or missing entirely — validate here so the frontend can trust whatever it gets
+// (or safely fall back to a center default when this is null).
+function validEyePosition(raw) {
+  if (!raw || typeof raw.x !== "number" || typeof raw.y !== "number") return null;
+  if (Number.isNaN(raw.x) || Number.isNaN(raw.y)) return null;
+  if (raw.x < 0 || raw.x > 1 || raw.y < 0 || raw.y > 1) return null;
+  return { x: raw.x, y: raw.y };
 }
 
 export default async function handler(req, res) {
@@ -118,6 +130,9 @@ export default async function handler(req, res) {
       success: true,
       objectLabel: parsed.object_label || objectLabel || "thing",
       responseText: parsed.response_text || "...",
+      // null on follow-up turns (not requested) or when Gemini's estimate was
+      // missing/malformed/out of range — frontend falls back to a center default.
+      eyePosition: isOpeningRequest ? validEyePosition(parsed.eye_position) : null,
     });
   } catch (err) {
     console.error("Gemini timeout/exception:", err);

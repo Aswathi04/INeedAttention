@@ -7,19 +7,36 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Genie Lamp — Phase 2 (personalities + memory)</h1>
+  <h1>Genie Lamp — Phase 3 (timer + lamp gate)</h1>
 
-  <video id="camera" autoplay playsinline muted></video>
-  <br />
-  <button id="captureBtn">Point &amp; Ask</button>
+  <!-- SCREEN 1: lamp, swipe/tap to unlock -->
+  <div id="lampScreen">
+    <div id="lamp" style="font-size: 6rem; user-select: none; cursor: pointer;">🪔</div>
+    <p>Swipe (or tap) the lamp 3 times to rub it.</p>
+    <p id="swipeCount">Swipes: 0 / 3</p>
+  </div>
 
-  <p id="currentObject"></p>
-  <div id="conversationLog"></div>
+  <!-- SCREEN 2: brief unlock message -->
+  <div id="unlockScreen" hidden>
+    <h2>You are a genie for 5 minutes.</h2>
+  </div>
 
-  <form id="replyForm">
-    <input id="replyInput" type="text" placeholder="Type your reply..." autocomplete="off" />
-    <button type="submit">Send</button>
-  </form>
+  <!-- SCREEN 3: camera + conversation (Phase 2 content, now wrapped) -->
+  <div id="mainScreen" hidden>
+    <p id="timerDisplay">5:00</p>
+
+    <video id="camera" autoplay playsinline muted></video>
+    <br />
+    <button id="captureBtn">Point &amp; Ask</button>
+
+    <p id="currentObject"></p>
+    <div id="conversationLog"></div>
+
+    <form id="replyForm">
+      <input id="replyInput" type="text" placeholder="Type your reply..." autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>

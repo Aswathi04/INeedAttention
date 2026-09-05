@@ -30,7 +30,7 @@ let timerInterval = null;
 
 // --- Hardcoded farewell lines (Tech Spec Section 8) - no API call, must fire instantly ---
 const farewellLines = [
-  "Poof. Your five minutes are up, genie. The objects have gone back to ignoring you.",
+  "Poof. Your three minutes are up, genie. The objects have gone back to ignoring you.",
   "Time's up! The furniture has nothing more to say to you. For now.",
   "And... you're just a regular human again. The bench doesn't even remember your name.",
 ];
@@ -73,7 +73,7 @@ function unlockPowers() {
     mainScreen.hidden = false;
     appState.screen = "camera";
     appState.powerActive = true;
-    appState.timerEndsAt = Date.now() + 5 * 60 * 1000;
+    appState.timerEndsAt = Date.now() + 3 * 60 * 1000;
     startCamera();
     startTimerDisplay();
   }, 2000);

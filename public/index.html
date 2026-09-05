@@ -2,40 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Genie Lamp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Genie Lamp — Phase 3 (timer + lamp gate)</h1>
 
-  <!-- SCREEN 1: lamp, swipe/tap to unlock -->
-  <div id="lampScreen">
-    <div id="lamp" style="font-size: 6rem; user-select: none; cursor: pointer;">🪔</div>
-    <p>Swipe (or tap) the lamp 3 times to rub it.</p>
-    <p id="swipeCount">Swipes: 0 / 3</p>
-  </div>
+  <!-- SCREEN: LAMP -->
+  <section id="screen-lamp" class="screen screen--active">
+    <div class="glow glow--lamp" aria-hidden="true"></div>
+    <div class="lamp-stage">
+      <p class="eyebrow-free-label">rub to wake it</p>
+      <button id="lamp-figure" class="lamp-figure" aria-label="Rub the lamp, three times">
+        <svg viewBox="0 0 200 120" class="lamp-svg" aria-hidden="true">
+          <ellipse cx="100" cy="108" rx="70" ry="8" class="lamp-shadow" />
+          <path d="M40 92 C40 60 65 55 78 55 L78 44 C78 40 82 38 86 38 L96 38 C100 38 102 41 102 44 L102 55 C130 55 150 68 150 88 C150 98 138 100 120 100 L58 100 C46 100 40 97 40 92 Z" class="lamp-body" />
+          <path d="M150 88 C168 82 182 82 190 76" class="lamp-spout" fill="none" stroke-linecap="round" />
+          <circle cx="96" cy="30" r="6" class="lamp-knob" />
+        </svg>
+        <span class="swipe-dots" id="swipe-dots" aria-hidden="true">
+          <span class="swipe-dot"></span>
+          <span class="swipe-dot"></span>
+          <span class="swipe-dot"></span>
+        </span>
+      </button>
+      <h1 class="lamp-title">Genie Lamp</h1>
+      <p class="lamp-sub">Swipe the lamp three times. Say hello to the furniture.</p>
+      <button id="tap-fallback" class="tap-fallback" type="button">having trouble swiping? tap here three times instead</button>
+    </div>
+  </section>
 
-  <!-- SCREEN 2: brief unlock message -->
-  <div id="unlockScreen" hidden>
-    <h2>You are a genie for 3 minutes.</h2>
-  </div>
+  <!-- SCREEN: UNLOCKING -->
+  <section id="screen-unlocking" class="screen">
+    <div class="glow glow--lamp glow--bright" aria-hidden="true"></div>
+    <div class="unlock-stage">
+      <p class="unlock-line">You are a genie for three minutes.</p>
+      <p class="unlock-sub">Go find something to talk to.</p>
+    </div>
+  </section>
 
-  <!-- SCREEN 3: camera + conversation (Phase 2 content, now wrapped) -->
-  <div id="mainScreen" hidden>
-    <p id="timerDisplay">3:00</p>
+  <!-- SCREEN: CAMERA / CONVERSATION -->
+  <section id="screen-camera" class="screen">
+    <div class="camera-frame">
+      <video id="camera-video" class="camera-video" autoplay playsinline muted></video>
+      <div class="camera-scrim" aria-hidden="true"></div>
 
-    <video id="camera" autoplay playsinline muted></video>
-    <br />
-    <button id="captureBtn">Point &amp; Ask</button>
+      <header class="hud">
+        <div class="hud-timer" id="hud-timer">3:00</div>
+        <div class="hud-object" id="hud-object">point at something</div>
+      </header>
 
-    <p id="currentObject"></p>
-    <div id="conversationLog"></div>
+      <button id="capture-btn" class="capture-btn" type="button" aria-label="Point and identify">
+        <span class="capture-ring"></span>
+      </button>
 
-    <form id="replyForm">
-      <input id="replyInput" type="text" placeholder="Type your reply..." autocomplete="off" />
-      <button type="submit">Send</button>
-    </form>
+      <div class="glow glow--soft" id="chat-glow" aria-hidden="true"></div>
+
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+
+      <form id="chat-form" class="chat-form">
+        <input
+          id="chat-input"
+          class="chat-input"
+          type="text"
+          placeholder="Say something back…"
+          autocomplete="off"
+          disabled
+        />
+        <button id="chat-send" class="chat-send" type="submit" disabled>Send</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FAREWELL OVERLAY -->
+  <div id="farewell-overlay" class="farewell-overlay">
+    <p id="farewell-text" class="farewell-text"></p>
+    <p class="farewell-sub">Swipe the lamp to try again.</p>
   </div>
 
   <script type="module" src="app.js"></script>

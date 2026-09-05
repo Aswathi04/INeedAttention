@@ -1,95 +1,114 @@
-// Phase 3: lamp gate + timer (Master Doc Section 6, Tech Spec Sections 8 & 10).
-// Screens: "lamp" -> "unlocking" -> "camera"/"conversation" -> back to "lamp" on expiry.
+// app.js — Genie Lamp frontend
+import { personalityMap, personalityAccents } from "./personalities.js";
 
-import { getPersonalityPrompt } from "./personalities.js";
+const POWER_DURATION_MS = 3 * 60 * 1000; // 3 minutes (intentional deviation from 5, user-requested)
 
 const appState = {
   screen: "lamp",
   swipeCount: 0,
   powerActive: false,
   timerEndsAt: null,
-  currentObject: null,
+  currentObject: null, // { label, personalityKey }
   conversationHistory: [],
+  timerInterval: null,
 };
 
-// --- Element refs ---
-const lampScreen = document.getElementById("lampScreen");
-const unlockScreen = document.getElementById("unlockScreen");
-const mainScreen = document.getElementById("mainScreen");
-const lamp = document.getElementById("lamp");
-const swipeCountEl = document.getElementById("swipeCount");
-const timerDisplay = document.getElementById("timerDisplay");
-
-const video = document.getElementById("camera");
-const conversationLog = document.getElementById("conversationLog");
-const currentObjectEl = document.getElementById("currentObject");
-const replyForm = document.getElementById("replyForm");
-const replyInput = document.getElementById("replyInput");
-
-let timerInterval = null;
-
-// --- Speech output (Tech Spec Section 9) ---
-function speak(text) {
-  if (!("speechSynthesis" in window)) return; // graceful degrade, text still displays
-  window.speechSynthesis.cancel(); // stop any currently speaking utterance first
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 1.0;
-  utterance.pitch = 1.0;
-  window.speechSynthesis.speak(utterance);
-}
-
-// --- Hardcoded farewell lines (Tech Spec Section 8) - no API call, must fire instantly ---
 const farewellLines = [
   "Poof. Your three minutes are up, genie. The objects have gone back to ignoring you.",
   "Time's up! The furniture has nothing more to say to you. For now.",
   "And... you're just a regular human again. The bench doesn't even remember your name.",
 ];
 
-// ===================== SCREEN 1: Lamp (swipe/tap to unlock) =====================
+// ---- DOM refs ----
+const screens = {
+  lamp: document.getElementById("screen-lamp"),
+  unlocking: document.getElementById("screen-unlocking"),
+  camera: document.getElementById("screen-camera"),
+};
+const lampFigure = document.getElementById("lamp-figure");
+const swipeDots = [...document.querySelectorAll(".swipe-dot")];
+const tapFallback = document.getElementById("tap-fallback");
+const video = document.getElementById("camera-video");
+const hudTimer = document.getElementById("hud-timer");
+const hudObject = document.getElementById("hud-object");
+const captureBtn = document.getElementById("capture-btn");
+const chatLog = document.getElementById("chat-log");
+const chatForm = document.getElementById("chat-form");
+const chatInput = document.getElementById("chat-input");
+const chatSend = document.getElementById("chat-send");
+const farewellOverlay = document.getElementById("farewell-overlay");
+const farewellText = document.getElementById("farewell-text");
 
+// ---- Screen transitions ----
+function showScreen(name) {
+  appState.screen = name;
+  Object.entries(screens).forEach(([key, el]) => {
+    el.classList.toggle("screen--active", key === name);
+  });
+}
+
+// ---- Lamp unlock (swipe OR tap, 3x either way) ----
 let touchStartX = 0;
 
-lamp.addEventListener("touchstart", (e) => {
-  touchStartX = e.touches[0].clientX;
-});
-
-lamp.addEventListener("touchend", (e) => {
-  const touchEndX = e.changedTouches[0].clientX;
-  if (Math.abs(touchEndX - touchStartX) > 50) {
-    registerSwipe();
-  }
-});
-
-// Fallback: plain click/tap also counts, per Tech Spec Section 10 (swipe can be flaky on demo day)
-lamp.addEventListener("click", registerSwipe);
-
-function registerSwipe() {
+function registerUnlockProgress() {
   appState.swipeCount++;
-  swipeCountEl.textContent = `Swipes: ${appState.swipeCount} / 3`;
+  lampFigure.classList.add("lamp-figure--shake");
+  setTimeout(() => lampFigure.classList.remove("lamp-figure--shake"), 350);
+
+  swipeDots.forEach((dot, i) => {
+    dot.classList.toggle("swipe-dot--lit", i < appState.swipeCount);
+  });
+
   if (appState.swipeCount >= 3) {
     unlockPowers();
   }
 }
 
-// ===================== SCREEN 2: Unlock message, then start timer =====================
+lampFigure.addEventListener("touchstart", (e) => {
+  touchStartX = e.touches[0].clientX;
+});
 
-function unlockPowers() {
-  lampScreen.hidden = true;
-  unlockScreen.hidden = false;
-  appState.screen = "unlocking";
+lampFigure.addEventListener("touchend", (e) => {
+  const touchEndX = e.changedTouches[0].clientX;
+  if (Math.abs(touchEndX - touchStartX) > 50) {
+    registerUnlockProgress();
+  }
+});
 
-  setTimeout(() => {
-    unlockScreen.hidden = true;
-    mainScreen.hidden = false;
-    appState.screen = "camera";
-    appState.powerActive = true;
-    appState.timerEndsAt = Date.now() + 3 * 60 * 1000;
-    startCamera();
+tapFallback.addEventListener("click", registerUnlockProgress);
+
+async function unlockPowers() {
+  showScreen("unlocking");
+  appState.powerActive = true;
+  appState.timerEndsAt = Date.now() + POWER_DURATION_MS;
+
+  setTimeout(async () => {
+    showScreen("camera");
     startTimerDisplay();
+    await startCamera();
   }, 2000);
 }
 
-// ===================== Timer (Tech Spec Section 8) =====================
+// ---- Timer ----
+function formatTime(ms) {
+  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function startTimerDisplay() {
+  clearInterval(appState.timerInterval);
+  appState.timerInterval = setInterval(() => {
+    const remaining = appState.timerEndsAt - Date.now();
+    hudTimer.textContent = formatTime(remaining);
+    hudTimer.classList.toggle("hud-timer--urgent", remaining <= 30000 && remaining > 0);
+    if (remaining <= 0) {
+      clearInterval(appState.timerInterval);
+      expirePowers();
+    }
+  }, 250);
+}
 
 function checkPowerStatus() {
   if (!appState.powerActive) return "inactive";
@@ -100,75 +119,53 @@ function checkPowerStatus() {
   return "active";
 }
 
-function startTimerDisplay() {
-  updateTimerDisplay();
-  timerInterval = setInterval(updateTimerDisplay, 1000);
-}
-
-function updateTimerDisplay() {
-  const remainingMs = Math.max(0, appState.timerEndsAt - Date.now());
-  const totalSeconds = Math.ceil(remainingMs / 1000);
-  const mins = Math.floor(totalSeconds / 60);
-  const secs = totalSeconds % 60;
-  timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
-
-  if (remainingMs <= 0) {
-    clearInterval(timerInterval);
-  }
-}
-
-// Call this BEFORE any action that would otherwise call the API.
-// Returns true if the action should proceed, false if it was blocked by expiry.
-function guardAgainstExpiry() {
-  const status = checkPowerStatus();
-  if (status === "expired") {
-    handleExpiry();
-    return false;
-  }
-  return true;
-}
-
-function handleExpiry() {
-  clearInterval(timerInterval);
+function expirePowers() {
+  appState.powerActive = false;
   const line = farewellLines[Math.floor(Math.random() * farewellLines.length)];
-  addLogLine("object", line);
+  speak(line);
+  farewellText.textContent = line;
+  farewellOverlay.classList.add("farewell-overlay--visible");
 
-  // Brief pause so the farewell is readable, then reset to lamp screen.
+  stopCamera();
+
   setTimeout(() => {
+    farewellOverlay.classList.remove("farewell-overlay--visible");
     resetToLampScreen();
-  }, 2500);
+  }, 4000);
 }
 
 function resetToLampScreen() {
-  appState.screen = "lamp";
   appState.swipeCount = 0;
-  appState.powerActive = false;
-  appState.timerEndsAt = null;
   appState.currentObject = null;
   appState.conversationHistory = [];
-
-  swipeCountEl.textContent = "Swipes: 0 / 3";
-  conversationLog.innerHTML = "";
-  currentObjectEl.textContent = "";
-
-  mainScreen.hidden = true;
-  lampScreen.hidden = false;
-
-  const stream = video.srcObject;
-  if (stream) stream.getTracks().forEach((track) => track.stop());
+  swipeDots.forEach((dot) => dot.classList.remove("swipe-dot--lit"));
+  chatLog.innerHTML = "";
+  chatInput.value = "";
+  chatInput.disabled = true;
+  chatSend.disabled = true;
+  hudObject.textContent = "point at something";
+  showScreen("lamp");
 }
 
-// ===================== SCREEN 3: Camera + conversation (Phase 2 logic) =====================
+// ---- Camera ----
+let mediaStream = null;
 
 async function startCamera() {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({
+    mediaStream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "environment" },
     });
-    video.srcObject = stream;
+    video.srcObject = mediaStream;
   } catch (err) {
-    addLogLine("system", "Camera access needed to see objects — please allow and reload.");
-    console.error(err);
+    console.error("Camera error:", err);
+    addSystemLine("Camera access needed to see objects — please allow and reload.");
+  }
+}
+
+function stopCamera() {
+  if (mediaStream) {
+    mediaStream.getTracks().forEach((track) => track.stop());
+    mediaStream = null;
   }
 }
 
@@ -180,86 +177,130 @@ function captureFrame() {
   return canvas.toDataURL("image/jpeg", 0.7).split(",")[1];
 }
 
-function addLogLine(role, text) {
-  const line = document.createElement("p");
-  line.textContent = `${role === "user" ? "You" : role === "object" ? "Object" : ""}: ${text}`;
-  conversationLog.appendChild(line);
+// ---- Chat log rendering ----
+function addBubble(role, text, accentColor) {
+  const bubble = document.createElement("div");
+  bubble.className = `chat-bubble chat-bubble--${role}`;
+  if (accentColor) bubble.style.setProperty("--bubble-accent", accentColor);
+  bubble.textContent = text;
+  chatLog.appendChild(bubble);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return bubble;
+}
 
-  if (role === "object") {
-    speak(text); // caption shows immediately above; speech plays alongside, per Tech Spec Section 9
+function addSystemLine(text) {
+  addBubble("system", text);
+}
+
+function addObjectLine(text) {
+  const accent = appState.currentObject
+    ? personalityAccents[appState.currentObject.personalityKey]
+    : undefined;
+  addBubble("object", text, accent);
+  speak(text);
+}
+
+function addUserLine(text) {
+  addBubble("user", text);
+}
+
+// ---- TTS ----
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  window.speechSynthesis.speak(utterance);
+}
+
+// ---- API calls ----
+async function callGemini(payload) {
+  try {
+    const res = await fetch("/api/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Network error calling /api/gemini:", err);
+    return { success: false, error: "gemini_timeout", message: "The object seems to be ignoring you right now." };
   }
 }
 
-document.getElementById("captureBtn").addEventListener("click", async () => {
-  if (!guardAgainstExpiry()) return;
-
-  const frame = captureFrame();
-  conversationLog.innerHTML = "";
-  appState.conversationHistory = [];
-  currentObjectEl.textContent = "Asking the object...";
-
-  try {
-    const res = await fetch("/api/gemini", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageBase64: frame, conversationHistory: [] }),
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      appState.currentObject = {
-        label: data.objectLabel,
-        personalityPrompt: getPersonalityPrompt(data.objectLabel),
-      };
-      currentObjectEl.textContent = `Talking to: ${data.objectLabel}`;
-      appState.conversationHistory.push({ role: "object", text: data.responseText });
-      addLogLine("object", data.responseText);
-    } else {
-      currentObjectEl.textContent = "";
-      addLogLine("system", data.message);
-    }
-  } catch (err) {
-    currentObjectEl.textContent = "";
-    addLogLine("system", "...the object seems to be ignoring you. Try again?");
-    console.error(err);
+// Opening capture: the API infers object + in-character reply in one Gemini
+// call (it doesn't know the personality yet), then we map label -> personality
+// on the client for all follow-up turns.
+async function identifyObjectWithPersonality() {
+  if (checkPowerStatus() === "expired") {
+    expirePowers();
+    return;
   }
-});
+  captureBtn.disabled = true;
+  addSystemLine("Asking the object...");
 
-replyForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!guardAgainstExpiry()) return;
+  const imageBase64 = captureFrame();
+  // We don't know the personality until Gemini identifies the object, so the
+  // opening call sends no personalityKey — the API infers object + reply in
+  // one shot, then we map label -> personality on the client for follow-ups.
+  const result = await callGemini({ imageBase64 });
 
-  const userMessage = replyInput.value.trim();
-  if (!userMessage) return;
-  if (!appState.currentObject) {
-    addLogLine("system", "Point at an object first.");
+  const lastSystem = [...chatLog.querySelectorAll(".chat-bubble--system")].pop();
+  if (lastSystem) lastSystem.remove();
+  captureBtn.disabled = false;
+
+  if (!result.success) {
+    const fallbackLabel = appState.currentObject?.label || "object";
+    addSystemLine(result.message || `The ${fallbackLabel} seems to be ignoring you right now.`);
     return;
   }
 
-  replyInput.value = "";
-  addLogLine("user", userMessage);
+  const label = (result.objectLabel || "thing").toLowerCase().trim();
+  const personalityKey = personalityMap[label] || personalityMap.default;
 
-  try {
-    const res = await fetch("/api/gemini", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        personalityPrompt: appState.currentObject.personalityPrompt,
-        conversationHistory: appState.conversationHistory,
-        userMessage,
-      }),
-    });
-    const data = await res.json();
+  appState.currentObject = { label, personalityKey };
+  appState.conversationHistory = [{ role: "object", text: result.responseText }];
 
-    if (data.success) {
-      appState.conversationHistory.push({ role: "user", text: userMessage });
-      appState.conversationHistory.push({ role: "object", text: data.responseText });
-      addLogLine("object", data.responseText);
-    } else {
-      addLogLine("system", data.message);
-    }
-  } catch (err) {
-    addLogLine("system", "...the object seems to be ignoring you. Try again?");
-    console.error(err);
+  hudObject.textContent = label;
+  chatInput.disabled = false;
+  chatSend.disabled = false;
+
+  addObjectLine(result.responseText);
+}
+
+captureBtn.addEventListener("click", identifyObjectWithPersonality);
+
+chatForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const message = chatInput.value.trim();
+  if (!message || !appState.currentObject) return;
+
+  if (checkPowerStatus() === "expired") {
+    expirePowers();
+    return;
   }
+
+  chatInput.value = "";
+  addUserLine(message);
+  appState.conversationHistory.push({ role: "user", text: message });
+
+  chatSend.disabled = true;
+
+  const result = await callGemini({
+    personalityKey: appState.currentObject.personalityKey,
+    objectLabel: appState.currentObject.label,
+    conversationHistory: appState.conversationHistory,
+    userMessage: message,
+  });
+
+  chatSend.disabled = false;
+
+  if (!result.success) {
+    addSystemLine(result.message || `The ${appState.currentObject.label} seems to be ignoring you right now.`);
+    return;
+  }
+
+  appState.conversationHistory.push({ role: "object", text: result.responseText });
+  addObjectLine(result.responseText);
 });

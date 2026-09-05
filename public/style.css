@@ -1,5 +1,546 @@
+/* ========================================================================
+   GENIE LAMP — design tokens
+   Deep indigo night + lamp gold, with a teal "magic smoke" accent reserved
+   for active-power states. One recurring motif — the glow behind the lamp —
+   carries across all three screens instead of separate decoration each time.
+   ======================================================================== */
+
+:root {
+  --ink: #140b29;
+  --ink-raised: #231646;
+  --ink-raised-2: #2c1c56;
+  --gold: #e3a83b;
+  --gold-bright: #f6c868;
+  --smoke: #54d3c2;
+  --parchment: #f4e8cc;
+  --dim: #b6a6d6;
+  --jewel: #c23b6c;
+  --danger: #e3653b;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Space Grotesk", system-ui, sans-serif;
+
+  --radius-lamp: 999px;
+  --radius-panel: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-  font-family: system-ui, sans-serif;
-  padding: 2rem;
+  height: 100%;
+  margin: 0;
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================================================
+   Screen management
+   ======================================================================== */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.screen--active {
+  display: flex;
+}
+
+/* Shared glow motif — a soft radial bloom that stands in for lamp-light /
+   magic. Present (dim) on the lamp screen, bright during unlock, faint
+   behind the chat log while powers are active. */
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 62%,
+    rgba(227, 168, 59, 0.35),
+    rgba(227, 168, 59, 0.08) 45%,
+    transparent 70%
+  );
+  filter: blur(2px);
+  animation: glow-breathe 4.5s ease-in-out infinite;
+}
+
+.glow--bright {
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgba(246, 200, 104, 0.55),
+    rgba(84, 211, 194, 0.18) 40%,
+    transparent 72%
+  );
+  animation-duration: 2.2s;
+}
+
+.glow--soft {
+  opacity: 0.35;
+  background: radial-gradient(circle at 50% 20%, rgba(84, 211, 194, 0.3), transparent 60%);
+}
+
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* ========================================================================
+   LAMP SCREEN
+   ======================================================================== */
+
+.lamp-stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px;
   text-align: center;
+}
+
+.eyebrow-free-label {
+  margin: 0;
+  color: var(--dim);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.lamp-figure {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 24px;
+  margin: 4px 0;
+  touch-action: none;
+}
+
+.lamp-svg {
+  width: 220px;
+  height: auto;
+  filter: drop-shadow(0 0 22px rgba(227, 168, 59, 0.45));
+}
+
+.lamp-shadow {
+  fill: rgba(0, 0, 0, 0.35);
+}
+
+.lamp-body {
+  fill: var(--gold);
+  stroke: var(--gold-bright);
+  stroke-width: 1.5;
+}
+
+.lamp-spout,
+.lamp-knob {
+  stroke: var(--gold-bright);
+  fill: var(--gold-bright);
+}
+
+.lamp-spout {
+  stroke-width: 4;
+}
+
+.swipe-dots {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.swipe-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(244, 232, 204, 0.25);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.swipe-dot.swipe-dot--lit {
+  background: var(--gold-bright);
+  transform: scale(1.3);
+}
+
+.lamp-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2.4rem;
+  margin: 4px 0 0;
+  color: var(--parchment);
+}
+
+.lamp-sub {
+  margin: 0;
+  max-width: 30ch;
+  color: var(--dim);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.tap-fallback {
+  margin-top: 18px;
+  background: none;
+  border: none;
+  color: var(--dim);
+  text-decoration: underline;
+  text-decoration-color: rgba(182, 166, 214, 0.4);
+  font-size: 0.85rem;
+}
+
+/* Shake feedback when lamp is swiped/tapped */
+.lamp-figure.lamp-figure--shake {
+  animation: lamp-shake 0.35s ease;
+}
+
+@keyframes lamp-shake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+}
+
+/* ========================================================================
+   UNLOCKING SCREEN
+   ======================================================================== */
+
+.unlock-stage {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 32px;
+}
+
+.unlock-line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.9rem;
+  margin: 0 0 8px;
+  color: var(--gold-bright);
+}
+
+.unlock-sub {
+  margin: 0;
+  color: var(--parchment);
+  opacity: 0.85;
+}
+
+/* ========================================================================
+   CAMERA / CONVERSATION SCREEN
+   ======================================================================== */
+
+.camera-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.camera-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 11, 41, 0.75) 0%,
+    rgba(20, 11, 41, 0.1) 22%,
+    rgba(20, 11, 41, 0.1) 55%,
+    rgba(20, 11, 41, 0.92) 100%
+  );
+  pointer-events: none;
+}
+
+.hud {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(16px, env(safe-area-inset-top)) 18px 0;
+}
+
+.hud-timer {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--gold-bright);
+  background: rgba(20, 11, 41, 0.55);
+  border: 1px solid rgba(227, 168, 59, 0.4);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-timer.hud-timer--urgent {
+  color: var(--danger);
+  border-color: rgba(227, 101, 59, 0.6);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.hud-object {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--parchment);
+  background: rgba(20, 11, 41, 0.55);
+  border-radius: 999px;
+  padding: 6px 16px;
+  text-transform: lowercase;
+}
+
+.capture-btn {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 128px;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-bright);
+  background: rgba(227, 168, 59, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.capture-btn:active {
+  transform: translateX(-50%) scale(0.92);
+  background: rgba(227, 168, 59, 0.35);
+}
+
+.capture-ring {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.capture-btn.capture-btn--hidden {
+  display: none;
+}
+
+.chat-log {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 78px;
+  max-height: 46%;
+  overflow-y: auto;
+  padding: 0 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scrollbar-width: none;
+}
+
+.chat-log::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: var(--radius-panel);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  animation: bubble-in 0.25s ease;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-bubble--object {
+  align-self: flex-start;
+  background: var(--ink-raised);
+  border: 1px solid var(--bubble-accent, var(--gold));
+  border-bottom-left-radius: 4px;
+  color: var(--parchment);
+}
+
+.chat-bubble--user {
+  align-self: flex-end;
+  background: var(--jewel);
+  border-bottom-right-radius: 4px;
+  color: var(--parchment);
+}
+
+.chat-bubble--system {
+  align-self: center;
+  background: transparent;
+  color: var(--dim);
+  font-style: italic;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+}
+
+.chat-form {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  background: rgba(20, 11, 41, 0.85);
+  backdrop-filter: blur(6px);
+}
+
+.chat-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--ink-raised);
+  border: 1px solid rgba(244, 232, 204, 0.15);
+  border-radius: 999px;
+  padding: 10px 16px;
+  color: var(--parchment);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.chat-input:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+.chat-input:disabled {
+  opacity: 0.4;
+}
+
+.chat-send {
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  border-radius: 999px;
+  padding: 0 18px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.chat-send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ========================================================================
+   FAREWELL OVERLAY
+   ======================================================================== */
+
+.farewell-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px;
+  text-align: center;
+  background: radial-gradient(circle at 50% 45%, rgba(84, 211, 194, 0.18), var(--ink) 70%);
+}
+
+.farewell-overlay.farewell-overlay--visible {
+  display: flex;
+  animation: fade-in 0.4s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.farewell-text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.6rem;
+  max-width: 26ch;
+  color: var(--gold-bright);
+  margin: 0;
+}
+
+.farewell-sub {
+  color: var(--dim);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ========================================================================
+   Focus visibility (accessibility floor)
+   ======================================================================== */
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
 }

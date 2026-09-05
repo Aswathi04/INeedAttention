@@ -4,9 +4,9 @@
 
 import { personalityPrompts } from "./personalities.js";
 
-// If Gemini retires this model again, check Vercel function logs for "Gemini error:" —
-// Google's error message names the current replacement model directly.
-const GEMINI_MODEL = "gemini-3.6-flash";
+// Use a currently supported Gemini model. The app was previously pointing at a
+// non-existent model name, which caused the 4xx/5xx fallback response.
+const GEMINI_MODEL = "gemini-2.5-flash";
 
 function buildOpeningPrompt(personalityKey) {
   const template = personalityPrompts[personalityKey] || personalityPrompts.gremlin;

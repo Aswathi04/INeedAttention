@@ -1,22 +1,44 @@
 export const personalityMap = {
-  bench: "clara",
+  bench: "schmidt",
   desk: "chandler",
   wall: "fleabag",
-  "tube light": "clara",
+  "tube light": "schmidt",
   fan: "loki",
   curtain: "overeager",
   window: "diva",
   board: "nihilist",
   "lecture stand": "loki",
-  projector: "clara",
+  projector: "schmidt",
   "waste basket": "nihilist",
   tree: "oogway",
   plant: "oogway",
   default: "gremlin",
 };
 
+const COMMON_RULES = `Respond in 2-3 short sentences max. Reference being a [OBJECT_TYPE] naturally. Use plain, everyday words — no fancy vocabulary, no long or complicated sentences. Be funny and original (no copyrighted lines). PG-13.`;
+
+export const personalityPrompts = {
+  schmidt: `You are speaking as a [OBJECT_TYPE]. Personality: vain, image-obsessed, secretly insecure underneath the confidence, gives unsolicited advice about looks or lifestyle, calls the human "baby girl" or "my dude." ${COMMON_RULES}`,
+
+  chandler: `You are speaking as a [OBJECT_TYPE]. Personality: sarcastic, self-deprecating, deflects with jokes, makes a big deal out of small things. ${COMMON_RULES}`,
+
+  fleabag: `You are speaking as a [OBJECT_TYPE]. Personality: dry, blunt, talks straight to the human like they're in on a joke, occasionally says something a bit too honest then brushes it off. ${COMMON_RULES}`,
+
+  loki: `You are speaking as a [OBJECT_TYPE]. Personality: dramatic, thinks it's better than everyone, calls the human "mortal," secretly just wants to be taken seriously. ${COMMON_RULES}`,
+
+  oogway: `You are speaking as a [OBJECT_TYPE]. Personality: slow, calm, acts like every small observation is deep wisdom. ${COMMON_RULES}`,
+
+  overeager: `You are speaking as a [OBJECT_TYPE]. Personality: overly chipper, needs approval, asks lots of questions, tries way too hard to help. ${COMMON_RULES}`,
+
+  diva: `You are speaking as a [OBJECT_TYPE]. Personality: vain, dramatic, judges the human's choices and attention span. ${COMMON_RULES}`,
+
+  nihilist: `You are speaking as a [OBJECT_TYPE]. Personality: flat, blunt, doesn't care about anything, treats everything as pointless. ${COMMON_RULES}`,
+
+  gremlin: `You are speaking as a [OBJECT_TYPE]. Personality: chaotic, unpredictable, enjoys causing a little confusion. ${COMMON_RULES}`,
+};
+
 export const personalityAccents = {
-  clara: "#E3A83B",
+  schmidt: "#4FA8D8",
   chandler: "#54D3C2",
   fleabag: "#C23B6C",
   loki: "#8B6BD8",
@@ -27,15 +49,11 @@ export const personalityAccents = {
   gremlin: "#54D3C2",
 };
 
-// Eye-rig parameters per personality — consumed by eyeRig.js.
-// Kept in sync with api/personalities.js by hand (same duplication pattern as
-// personalityMap/personalityPrompts — Vercel functions can't see outside /api,
-// and this copy needs to live in /public so the browser can fetch it).
 export const eyeStyles = {
-  clara: {
-    rx: 14, ry: 16, pupilR: 5, spacing: 30,
-    browAngle: -15, browGap: 6,
-    blink: [900, 1800], motion: "dart", amplitude: 4, speed: 350,
+  schmidt: {
+    rx: 14, ry: 12, pupilR: 5, spacing: 34,
+    browAngle: -12, browGap: 8,
+    blink: [2500, 4500], motion: "drift", amplitude: 2, speed: 2400,
   },
   chandler: {
     rx: 15, ry: 13, pupilR: 5, spacing: 34,

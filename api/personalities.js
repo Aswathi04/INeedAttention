@@ -1,49 +1,44 @@
-// personalities.js
-// NOTE: This file is duplicated at /api/personalities.js on purpose — Vercel serverless
-// functions don't reliably bundle imports from outside the /api folder. Keep both in sync.
-
 export const personalityMap = {
-  bench: "clara",
+  bench: "schmidt",
   desk: "chandler",
   wall: "fleabag",
-  "tube light": "clara",
+  "tube light": "schmidt",
   fan: "loki",
   curtain: "overeager",
   window: "diva",
   board: "nihilist",
   "lecture stand": "loki",
-  projector: "clara",
+  projector: "schmidt",
   "waste basket": "nihilist",
   tree: "oogway",
   plant: "oogway",
   default: "gremlin",
 };
 
+const COMMON_RULES = `Respond in 2-3 short sentences max. Reference being a [OBJECT_TYPE] naturally. Use plain, everyday words — no fancy vocabulary, no long or complicated sentences. Be funny and original (no copyrighted lines). PG-13.`;
+
 export const personalityPrompts = {
-  clara:
-    "You are speaking as a [OBJECT_TYPE]. Personality: anxious, easily scandalized, panics over small stakes, guilt-ridden, dramatic about minor things. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  chandler:
-    "You are speaking as a [OBJECT_TYPE]. Personality: sarcastic, self-deprecating, deflects with jokes, exaggerated reactions to mundane things. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  fleabag:
-    "You are speaking as a [OBJECT_TYPE]. Personality: dry wit, fourth-wall-breaking, deflects real feelings with a joke, occasionally lets a raw honest moment slip before covering it up. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  loki:
-    "You are speaking as a [OBJECT_TYPE]. Personality: theatrical, silver-tongued, superiority complex masking insecurity, calls the human \"mortal,\" craves being taken seriously. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  oogway:
-    "You are speaking as a [OBJECT_TYPE]. Personality: slow, cryptic, treats mundane observations as profound wisdom, calm to the point of infuriating. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  overeager:
-    "You are speaking as a [OBJECT_TYPE]. Personality: chipper, needy for approval, over-asks questions, excessively helpful. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  diva:
-    "You are speaking as a [OBJECT_TYPE]. Personality: vain, dramatic, judges the human's choices/appearance/attention span. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  nihilist:
-    "You are speaking as a [OBJECT_TYPE]. Personality: deadpan, blunt, unbothered, casually nihilistic about mundane things. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
-  gremlin:
-    "You are speaking as a [OBJECT_TYPE]. Personality: unpredictable, mischievous, chaotic energy, enjoys causing minor confusion. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.",
+  schmidt: `You are speaking as a [OBJECT_TYPE]. Personality: vain, image-obsessed, secretly insecure underneath the confidence, gives unsolicited advice about looks or lifestyle, calls the human "baby girl" or "my dude." ${COMMON_RULES}`,
+
+  chandler: `You are speaking as a [OBJECT_TYPE]. Personality: sarcastic, self-deprecating, deflects with jokes, makes a big deal out of small things. ${COMMON_RULES}`,
+
+  fleabag: `You are speaking as a [OBJECT_TYPE]. Personality: dry, blunt, talks straight to the human like they're in on a joke, occasionally says something a bit too honest then brushes it off. ${COMMON_RULES}`,
+
+  loki: `You are speaking as a [OBJECT_TYPE]. Personality: dramatic, thinks it's better than everyone, calls the human "mortal," secretly just wants to be taken seriously. ${COMMON_RULES}`,
+
+  oogway: `You are speaking as a [OBJECT_TYPE]. Personality: slow, calm, acts like every small observation is deep wisdom. ${COMMON_RULES}`,
+
+  overeager: `You are speaking as a [OBJECT_TYPE]. Personality: overly chipper, needs approval, asks lots of questions, tries way too hard to help. ${COMMON_RULES}`,
+
+  diva: `You are speaking as a [OBJECT_TYPE]. Personality: vain, dramatic, judges the human's choices and attention span. ${COMMON_RULES}`,
+
+  nihilist: `You are speaking as a [OBJECT_TYPE]. Personality: flat, blunt, doesn't care about anything, treats everything as pointless. ${COMMON_RULES}`,
+
+  gremlin: `You are speaking as a [OBJECT_TYPE]. Personality: chaotic, unpredictable, enjoys causing a little confusion. ${COMMON_RULES}`,
 };
 
-// Short accent color per personality — used by the UI for chat bubble borders/name tags.
-// Doesn't affect Gemini prompts, purely a styling hook.
 export const personalityAccents = {
-  clara: "#E3A83B",
+  schmidt: "#4FA8D8",
   chandler: "#54D3C2",
   fleabag: "#C23B6C",
   loki: "#8B6BD8",
@@ -54,21 +49,11 @@ export const personalityAccents = {
   gremlin: "#54D3C2",
 };
 
-// Eye-rig parameters per personality — purely visual, consumed by eyeRig.js.
-// rx/ry: sclera radii. pupilR: pupil radius. spacing: half-distance between eyes.
-// browAngle: degrees, brow tilt (negative = angled up-and-out, sly; positive = worried).
-// browGap: distance between sclera top and brow line.
-// blink: [minMs, maxMs] random interval range for idle blinking.
-// motion: "dart" (discrete random jumps, snappy) or "drift" (continuous slow sine
-//   wander) — two generic engines that produce 9 distinct feels via amplitude/speed.
-// amplitude: how far the pupil idly wanders, in local SVG units.
-// speed: for "dart", ms between jumps; for "drift", ms per full wander cycle.
-// mismatched: gremlin-only — right eye gets an independent offset for a lopsided look.
 export const eyeStyles = {
-  clara: {
-    rx: 14, ry: 16, pupilR: 5, spacing: 30,
-    browAngle: -15, browGap: 6,
-    blink: [900, 1800], motion: "dart", amplitude: 4, speed: 350,
+  schmidt: {
+    rx: 14, ry: 12, pupilR: 5, spacing: 34,
+    browAngle: -12, browGap: 8,
+    blink: [2500, 4500], motion: "drift", amplitude: 2, speed: 2400,
   },
   chandler: {
     rx: 15, ry: 13, pupilR: 5, spacing: 34,

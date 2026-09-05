@@ -7,14 +7,20 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Genie Lamp — Phase 1 (ugly skeleton)</h1>
+  <h1>Genie Lamp — Phase 2 (personalities + memory)</h1>
 
   <video id="camera" autoplay playsinline muted></video>
   <br />
   <button id="captureBtn">Point &amp; Ask</button>
 
-  <pre id="output">Waiting for a capture...</pre>
+  <p id="currentObject"></p>
+  <div id="conversationLog"></div>
 
-  <script src="app.js"></script>
+  <form id="replyForm">
+    <input id="replyInput" type="text" placeholder="Type your reply..." autocomplete="off" />
+    <button type="submit">Send</button>
+  </form>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>

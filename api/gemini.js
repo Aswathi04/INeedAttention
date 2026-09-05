@@ -73,7 +73,8 @@ async function callGroq(messages) {
       model: GROQ_MODEL,
       messages,
       response_format: { type: "json_object" },
-      max_completion_tokens: 300,
+      max_completion_tokens: 400,
+      reasoning_effort: "none",
     }),
   });
 

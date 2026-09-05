@@ -3,7 +3,7 @@
 //   - empty history  -> opening line: identify object + respond, in one call
 //   - non-empty      -> follow-up: personality already known, text-only call
 
-import { personalityMap, personalityPrompts } from "../personalities.js";
+import { personalityMap, personalityPrompts } from "./personalities.js";
 
 function buildPersonalityTable() {
   // Embeds the whole map so Gemini can pick the right voice itself, since we don't

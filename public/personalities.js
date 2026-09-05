@@ -1,19 +1,24 @@
+// Personality map + prompt templates — Tech Spec Section 5, Master Doc Section 3.
+// Locked list. Do not add/remove personalities without checking Master Doc Section 7 (Cut List)
+// if you're behind schedule — cut down to Oogway, Chandler, Fleabag, Loki, Clara first.
+
 export const personalityMap = {
-  bench:        "clara",
-  desk:         "chandler",
-  wall:         "fleabag",
+  bench: "clara",
+  desk: "chandler",
+  wall: "fleabag",
   "tube light": "clara",
-  fan:          "loki",
-  curtain:      "overeager",
-  window:       "diva",
-  board:        "nihilist",
+  fan: "loki",
+  curtain: "overeager",
+  window: "diva",
+  board: "nihilist",
   "lecture stand": "loki",
-  projector:    "clara",
+  projector: "clara",
   "waste basket": "nihilist",
-  tree:         "oogway",       // greenery through window
-  plant:        "oogway",
-  default:      "gremlin",       // fallback for unrecognized objects
+  tree: "oogway", // greenery through window
+  plant: "oogway",
+  default: "gremlin", // fallback for unrecognized objects
 };
+
 export const personalityPrompts = {
   clara: `You are speaking as a [OBJECT_TYPE]. Personality: anxious, easily scandalized, panics over small stakes, guilt-ridden, dramatic about minor things. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.`,
 
@@ -34,5 +39,10 @@ export const personalityPrompts = {
   gremlin: `You are speaking as a [OBJECT_TYPE]. Personality: unpredictable, mischievous, chaotic energy, enjoys causing minor confusion. Respond in 2-3 sentences max, reference being a [OBJECT_TYPE] naturally, be funny and original (no copyrighted lines), PG-13.`,
 };
 
-
-
+// Helper: look up the right prompt for a detected object label, filling in [OBJECT_TYPE].
+// Falls back to "gremlin" for anything not in the map, per Tech Spec Section 11.
+export function getPersonalityPrompt(objectLabel) {
+  const key = personalityMap[objectLabel.toLowerCase()] || personalityMap.default;
+  const template = personalityPrompts[key];
+  return template.replaceAll("[OBJECT_TYPE]", objectLabel);
+}

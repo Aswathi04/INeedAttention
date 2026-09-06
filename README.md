@@ -2,10 +2,17 @@
 
 ## Basic Details
 
+<<<<<<< HEAD
 ### Team Name: [Your Team Name]
 
 ### Team Members
 - Team Lead: [Your Name] - [Your College]
+=======
+### Team Name: Aswathi Thummarukudy
+
+### Team Members
+- Team Lead: Aswathi Thummarukudy - Viswajyothi College of Engineering and Technology
+>>>>>>> f93578052e3490c61cc63b743563aebe0d850995
 
 ### Project Description
 Point your phone's camera at any object — a bench, a fan, a wall — and it wakes up with a personality, talks back to you, and won't stop until your three minutes of "genie powers" run out.
@@ -95,4 +102,8 @@ vercel --prod
 [Add anything else — live URL, backup recording, etc.]
 
 ## Team Contributions
+<<<<<<< HEAD
 - [Your Name]: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.
+=======
+- [Your Name]: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.
+>>>>>>> f93578052e3490c61cc63b743563aebe0d850995

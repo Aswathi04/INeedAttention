@@ -20,6 +20,11 @@
     <div class="lamp-stage">
       <p class="eyebrow-free-label">rub to wake it</p>
       <button id="lamp-figure" class="lamp-figure" aria-label="Rub the lamp, three times">
+        <span class="lamp-wisps" aria-hidden="true">
+          <span class="wisp wisp--1"></span>
+          <span class="wisp wisp--2"></span>
+          <span class="wisp wisp--3"></span>
+        </span>
         <svg viewBox="0 0 200 120" class="lamp-svg" aria-hidden="true">
           <ellipse cx="100" cy="108" rx="70" ry="8" class="lamp-shadow" />
           <path d="M40 92 C40 60 65 55 78 55 L78 44 C78 40 82 38 86 38 L96 38 C100 38 102 41 102 44 L102 55 C130 55 150 68 150 88 C150 98 138 100 120 100 L58 100 C46 100 40 97 40 92 Z" class="lamp-body" />
@@ -33,6 +38,7 @@
         </span>
       </button>
       <h1 class="lamp-title">Genie Lamp</h1>
+      <p class="lamp-tagline">Talk to anything in the room. Yes, anything.</p>
       <p class="lamp-sub">Swipe the lamp three times. Say hello to the furniture.</p>
       <button id="tap-fallback" class="tap-fallback" type="button">having trouble swiping? tap here three times instead</button>
     </div>
@@ -58,7 +64,9 @@
         <div class="hud-object" id="hud-object">point at something</div>
       </header>
 
-      <button id="capture-btn" class="capture-btn" type="button" aria-label="Point and identify">
+      <div class="capture-hint" id="capture-hint">👉 Point at something, then tap the button</div>
+
+      <button id="capture-btn" class="capture-btn capture-btn--pulsing" type="button" aria-label="Point and identify">
         <span class="capture-ring"></span>
       </button>
 

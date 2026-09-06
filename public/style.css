@@ -608,3 +608,130 @@ input:focus-visible {
   outline: 2px solid var(--gold-bright);
   outline-offset: 2px;
 }
+
+/* ========================================================================
+   POLISH PASS — idle motion, clearer motive, first-time guidance
+   ======================================================================== */
+
+/* Smooth fades between screens instead of an instant swap */
+.screen {
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.screen--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Lamp is subtly alive even before unlock */
+.lamp-figure {
+  animation: lamp-idle-bob 3.2s ease-in-out infinite;
+}
+
+@keyframes lamp-idle-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-1deg); }
+}
+
+/* Magic wisps drifting off the spout */
+.lamp-wisps {
+  position: absolute;
+  top: 18px;
+  right: 12px;
+  width: 40px;
+  height: 60px;
+  pointer-events: none;
+}
+
+.wisp {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--smoke);
+  opacity: 0;
+  filter: blur(1px);
+  animation: wisp-rise 3s ease-in infinite;
+}
+
+.wisp--2 { animation-delay: 1s; left: 30%; }
+.wisp--3 { animation-delay: 2s; left: 70%; }
+
+@keyframes wisp-rise {
+  0% { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.7; }
+  100% { transform: translate(-50%, -50px) scale(1.4); opacity: 0; }
+}
+
+/* States the concept in one glance */
+.lamp-tagline {
+  margin: 0;
+  color: var(--gold-bright);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  background: rgba(227, 168, 59, 0.12);
+  border: 1px solid rgba(227, 168, 59, 0.3);
+  border-radius: 999px;
+  padding: 4px 14px;
+}
+
+/* First-time hint on the camera screen */
+.capture-hint {
+  position: absolute;
+  z-index: 3;
+  top: 72px;
+  left: 50%;
+  max-width: 80%;
+  text-align: center;
+  background: rgba(20, 11, 41, 0.75);
+  border: 1px solid rgba(246, 200, 104, 0.35);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  color: var(--parchment);
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  animation: hint-bounce 2.2s ease-in-out infinite;
+}
+
+.capture-hint.capture-hint--hidden {
+  opacity: 0;
+  transform: translate(-50%, -8px);
+  pointer-events: none;
+  animation: none;
+}
+
+@keyframes hint-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -4px); }
+}
+
+.capture-btn.capture-btn--pulsing {
+  animation: capture-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes capture-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(246, 200, 104, 0.5); }
+  50% { box-shadow: 0 0 0 10px rgba(246, 200, 104, 0); }
+}
+
+/* Small button/bubble feedback that was missing */
+.chat-send:hover:not(:disabled),
+.tap-fallback:hover {
+  filter: brightness(1.15);
+}
+
+.chat-send:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.chat-bubble {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}

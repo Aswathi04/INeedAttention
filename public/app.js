@@ -39,6 +39,7 @@ const chatInput = document.getElementById("chat-input");
 const chatSend = document.getElementById("chat-send");
 const farewellOverlay = document.getElementById("farewell-overlay");
 const farewellText = document.getElementById("farewell-text");
+const captureHint = document.getElementById("capture-hint");
 
 // ---- Screen transitions ----
 function showScreen(name) {
@@ -82,6 +83,9 @@ async function unlockPowers() {
   showScreen("unlocking");
   appState.powerActive = true;
   appState.timerEndsAt = Date.now() + POWER_DURATION_MS;
+
+  captureBtn.classList.add("capture-btn--pulsing");
+  captureHint?.classList.remove("capture-hint--hidden");
 
   setTimeout(async () => {
     showScreen("camera");
@@ -305,7 +309,11 @@ async function identifyObjectWithPersonality() {
   addObjectLine(result.responseText);
 }
 
-captureBtn.addEventListener("click", identifyObjectWithPersonality);
+captureBtn.addEventListener("click", () => {
+  captureBtn.classList.remove("capture-btn--pulsing");
+  captureHint?.classList.add("capture-hint--hidden");
+  identifyObjectWithPersonality();
+});
 
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();

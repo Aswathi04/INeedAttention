@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Rakkas&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Space+Grotesk:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="style.css" />
@@ -25,11 +25,26 @@
           <span class="wisp wisp--2"></span>
           <span class="wisp wisp--3"></span>
         </span>
-        <svg viewBox="0 0 200 120" class="lamp-svg" aria-hidden="true">
-          <ellipse cx="100" cy="108" rx="70" ry="8" class="lamp-shadow" />
-          <path d="M40 92 C40 60 65 55 78 55 L78 44 C78 40 82 38 86 38 L96 38 C100 38 102 41 102 44 L102 55 C130 55 150 68 150 88 C150 98 138 100 120 100 L58 100 C46 100 40 97 40 92 Z" class="lamp-body" />
-          <path d="M150 88 C168 82 182 82 190 76" class="lamp-spout" fill="none" stroke-linecap="round" />
-          <circle cx="96" cy="30" r="6" class="lamp-knob" />
+        <svg viewBox="0 0 220 140" class="lamp-svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="lampBodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="var(--gold-bright)" />
+              <stop offset="55%" stop-color="var(--gold)" />
+              <stop offset="100%" stop-color="#a97a1f" />
+            </linearGradient>
+          </defs>
+          <ellipse cx="108" cy="126" rx="62" ry="8" class="lamp-shadow" />
+          <path d="M60 112 Q108 122 156 112 L150 100 Q108 108 66 100 Z" fill="url(#lampBodyGradient)" stroke="var(--gold-bright)" stroke-width="1.2" />
+          <path d="M50 100 C46 74 60 50 88 44 C82 34 92 24 108 24 C124 24 134 34 128 44 C160 48 178 72 168 98 C160 108 60 110 50 100 Z" fill="url(#lampBodyGradient)" stroke="var(--gold-bright)" stroke-width="1.5" />
+          <ellipse cx="86" cy="60" rx="30" ry="22" fill="#ffffff" opacity="0.22" />
+          <path d="M100 24 C100 16 116 16 116 24 L116 30 L100 30 Z" fill="url(#lampBodyGradient)" stroke="var(--gold-bright)" stroke-width="1.2" />
+          <circle cx="108" cy="16" r="6" class="lamp-knob" />
+          <path d="M46 66 C30 66 30 92 48 94" fill="none" stroke="var(--gold-bright)" stroke-width="4" stroke-linecap="round" />
+          <path d="M168 92 C192 84 206 66 200 48 C198 40 190 40 188 48 C192 60 182 72 164 78" fill="none" stroke="url(#lampBodyGradient)" stroke-width="10" stroke-linecap="round" />
+          <path d="M168 92 C192 84 206 66 200 48 C198 40 190 40 188 48 C192 60 182 72 164 78" fill="none" stroke="var(--gold-bright)" stroke-width="1" stroke-linecap="round" opacity="0.6" />
+          <ellipse cx="108" cy="70" rx="7" ry="9" fill="var(--jewel)" stroke="var(--gold-bright)" stroke-width="1" />
+          <path d="M62 88 Q108 96 154 88" fill="none" stroke="var(--gold-bright)" stroke-width="1" opacity="0.4" />
+          <path d="M58 78 Q108 86 158 78" fill="none" stroke="var(--gold-bright)" stroke-width="1" opacity="0.3" />
         </svg>
         <span class="swipe-dots" id="swipe-dots" aria-hidden="true">
           <span class="swipe-dot"></span>

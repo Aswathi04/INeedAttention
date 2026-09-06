@@ -17,7 +17,9 @@
   --jewel: #c23b6c;
   --danger: #e3653b;
 
-  --font-display: "Fraunces", Georgia, serif;
+  --font-header: "Rakkas", Georgia, serif;
+  --font-subheader: "Amiri", Georgia, serif;
+  --font-narrative: "Cormorant Garamond", Georgia, serif;
   --font-body: "Space Grotesk", system-ui, sans-serif;
 
   --radius-lamp: 999px;
@@ -196,9 +198,9 @@ button {
 }
 
 .lamp-title {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 2.4rem;
+  font-family: var(--font-header);
+  font-weight: normal;
+  font-size: 2.7rem;
   margin: 4px 0 0;
   color: var(--parchment);
 }
@@ -207,7 +209,8 @@ button {
   margin: 0;
   max-width: 30ch;
   color: var(--dim);
-  font-size: 1rem;
+  font-family: var(--font-narrative);
+  font-size: 1.2rem;
   line-height: 1.5;
 }
 
@@ -251,9 +254,8 @@ button {
 }
 
 .unlock-line {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.9rem;
+  font-family: var(--font-header);
+  font-size: 2rem;
   margin: 0 0 8px;
   color: var(--gold-bright);
 }
@@ -261,6 +263,8 @@ button {
 .unlock-sub {
   margin: 0;
   color: var(--parchment);
+  font-family: var(--font-narrative);
+  font-size: 1.2rem;
   opacity: 0.85;
 }
 
@@ -334,8 +338,8 @@ button {
 }
 
 .hud-object {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-family: var(--font-subheader);
+  font-size: 1.1rem;
   color: var(--parchment);
   background: rgba(20, 11, 41, 0.55);
   border-radius: 999px;
@@ -399,7 +403,9 @@ button {
   max-width: 82%;
   padding: 10px 14px;
   border-radius: var(--radius-panel);
-  font-size: 0.95rem;
+  font-family: var(--font-narrative);
+  font-weight: 500;
+  font-size: 1.15rem;
   line-height: 1.4;
   animation: bubble-in 0.25s ease;
 }
@@ -585,9 +591,8 @@ button {
 }
 
 .farewell-text {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.6rem;
+  font-family: var(--font-header);
+  font-size: 1.8rem;
   max-width: 26ch;
   color: var(--gold-bright);
   margin: 0;
@@ -639,8 +644,8 @@ input:focus-visible {
 /* Magic wisps drifting off the spout */
 .lamp-wisps {
   position: absolute;
-  top: 18px;
-  right: 12px;
+  top: 4px;
+  right: 4px;
   width: 40px;
   height: 60px;
   pointer-events: none;
@@ -672,9 +677,8 @@ input:focus-visible {
 .lamp-tagline {
   margin: 0;
   color: var(--gold-bright);
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.05rem;
+  font-family: var(--font-subheader);
+  font-size: 1.1rem;
   background: rgba(227, 168, 59, 0.12);
   border: 1px solid rgba(227, 168, 59, 0.3);
   border-radius: 999px;

@@ -1,0 +1,98 @@
+# Genie Lamp 🧞
+
+## Basic Details
+
+### Team Name: Aswathi Thummarukudy
+
+### Team Members
+- Team Lead: Aswathi Thummarukudy - Viswajyothi College of Engineering and Technology
+
+### Project Description
+Point your phone's camera at any object — a bench, a fan, a wall — and it wakes up with a personality, talks back to you, and won't stop until your three minutes of "genie powers" run out.
+
+### The Problem (that doesn't exist)
+Every day, people walk past benches, desks, walls, and fans without once stopping to ask what those objects think of them. This is a crisis of unheard furniture opinions.
+
+### The Solution (that nobody asked for)
+Rub a lamp. Get three minutes of "genie powers." Point your phone at literally any object in the room and it identifies itself, adopts a wildly inappropriate personality, talks to you out loud with an animated blinking face, and holds a grudge for exactly 180 seconds before ghosting you forever.
+
+## Technical Details
+
+### Technologies/Components Used
+For Software:
+- **Languages:** JavaScript, HTML, CSS
+- **Frameworks:** None (vanilla JS, single-page app)
+- **Libraries/APIs:** Groq API (`qwen/qwen3.6-27b`, vision-capable) for object identification + in-character dialogue, Web Speech API (`speechSynthesis`) for text-to-speech, custom hand-built SVG "eye rig" for animated blinking/talking eyes
+- **Tools:** Vercel (hosting + serverless functions for the API proxy), Git/GitHub
+
+## Implementation
+
+### Installation
+```bash
+git clone https://github.com/[your-username]/[your-repo].git
+cd [your-repo]
+npm install
+```
+
+Create a `.env.local` file for local development:
+```
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+For the deployed version, set `GROQ_API_KEY` in Vercel → Project Settings → Environment Variables.
+
+### Run
+Locally (requires the [Vercel CLI](https://vercel.com/docs/cli)):
+```bash
+vercel dev
+```
+
+Deploy:
+```bash
+vercel --prod
+```
+
+## Project Documentation
+
+### Screenshots
+![Lamp screen](Add screenshot of the lamp swipe-to-unlock screen here)
+*The lamp screen — swipe three times (or tap three times as a fallback) to unlock genie powers.*
+
+![Camera + conversation](Add screenshot of the camera screen mid-conversation here)
+*Point at an object, get an in-character opening line, and keep chatting until the timer runs out.*
+
+![Animated eyes](Add screenshot of the eye rig overlay on an object here)
+*Each personality gets its own blink rate, pupil motion, and expression style.*
+
+### Diagrams
+```
+[Browser: Camera + UI]
+      |
+      | captures frame as base64 image
+      v
+[Vercel Serverless Function: /api/gemini.js]
+      |
+      | forwards image + personality prompt + conversation history
+      v
+[Groq API — qwen/qwen3.6-27b]
+      |
+      | returns: object label + in-character text + eye position
+      v
+[Back to Browser]
+      |
+      +--> Chat bubble (personality-accent-colored)
+      +--> speechSynthesis.speak(text)
+      +--> Animated eye rig overlay on the object
+```
+*Add your own version of this as an image if you want a nicer diagram — this ASCII version works as a placeholder.*
+
+## Project Demo
+
+### Video
+[Add your demo video link here]
+
+### Additional Demos
+[Add anything else — live URL, backup recording, etc.]
+
+## Team Contributions
+- [Your Name]: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.

@@ -115,3 +115,6 @@ vercel --prod
   <img src="./assets/chat-view-1.png" alt="Blackboard Interaction" width="300" />
   <img src="./assets/chat-view-2.png" alt="Genie Response" width="300" />
 </p>
+<p align="center">
+  <img src="./assets/lamp-home.png" alt="Genie Lamp Home Screen" width="300" />
+</p>

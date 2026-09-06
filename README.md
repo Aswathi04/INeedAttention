@@ -62,9 +62,10 @@ vercel --prod
 ## Project Documentation
 
 ### Screenshots
-![Lamp screen](Add screenshot of the lamp swipe-to-unlock screen here)
-*The lamp screen — swipe three times (or tap three times as a fallback) to unlock genie powers.*
-
+<p align="center">
+  <img src="./assets/app-demo.png" alt="Genie Lamp Screenshot" width="350"/>
+</p>
+ 
 ![Camera + conversation](Add screenshot of the camera screen mid-conversation here)
 *Point at an object, get an in-character opening line, and keep chatting until the timer runs out.*
 
@@ -107,3 +108,7 @@ vercel --prod
 =======
 - [Your Name]: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.
 >>>>>>> f93578052e3490c61cc63b743563aebe0d850995
+<p align="center">
+  <img src="./assets/chat-view-1.png" alt="Blackboard Interaction" width="300" />
+  <img src="./assets/chat-view-2.png" alt="Genie Response" width="300" />
+</p>

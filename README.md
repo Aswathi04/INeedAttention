@@ -6,10 +6,10 @@
 ## Basic Details
 
 <<<<<<< HEAD
-### Team Name: [Your Team Name]
+### Team Name: ASWATHI THUMMARUKUDY
 
 ### Team Members
-- Team Lead: [Your Name] - [Your College]
+- Team Lead: ASWATHI THUMMARUKUDY - VISWAJYOTHI COLLEGE OF ENGINEERING AND TECHNOLOGY
 =======
 ### Team Name: Aswathi Thummarukudy
 
@@ -35,32 +35,8 @@ For Software:
 - **Libraries/APIs:** Groq API (`qwen/qwen3.6-27b`, vision-capable) for object identification + in-character dialogue, Web Speech API (`speechSynthesis`) for text-to-speech, custom hand-built SVG "eye rig" for animated blinking/talking eyes
 - **Tools:** Vercel (hosting + serverless functions for the API proxy), Git/GitHub
 
-## Implementation
-
-### Installation
-```bash
-git clone https://github.com/[your-username]/[your-repo].git
-cd [your-repo]
-npm install
-```
-
-Create a `.env.local` file for local development:
-```
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-For the deployed version, set `GROQ_API_KEY` in Vercel → Project Settings → Environment Variables.
-
 ### Run
-Locally (requires the [Vercel CLI](https://vercel.com/docs/cli)):
-```bash
-vercel dev
-```
-
-Deploy:
-```bash
-vercel --prod
-```
+https://i-need-attention-5yd7.vercel.app/
 
 ## Project Documentation
 
@@ -69,12 +45,13 @@ vercel --prod
   <img src="./assets/app-demo.png" alt="Genie Lamp Screenshot" width="350"/>
 </p>
  
-![Camera + conversation](Add screenshot of the camera screen mid-conversation here)
-*Point at an object, get an in-character opening line, and keep chatting until the timer runs out.*
-
-![Animated eyes](Add screenshot of the eye rig overlay on an object here)
-*Each personality gets its own blink rate, pupil motion, and expression style.*
-
+<p align="center">
+  <img src="./assets/chat-view-1.png" alt="Blackboard Interaction" width="300" />
+  <img src="./assets/chat-view-2.png" alt="Genie Response" width="300" />
+</p>
+<p align="center">
+  <img src="./assets/lamp-home.png" alt="Genie Lamp Home Screen" width="300" />
+</p>
 ### Diagrams
 ```
 [Browser: Camera + UI]
@@ -95,15 +72,7 @@ vercel --prod
       +--> speechSynthesis.speak(text)
       +--> Animated eye rig overlay on the object
 ```
-*Add your own version of this as an image if you want a nicer diagram — this ASCII version works as a placeholder.*
-
 ## Project Demo
-
-### Video
-[Add your demo video link here]
-
-### Additional Demos
-[Add anything else — live URL, backup recording, etc.]
 
 ## Team Contributions
 <<<<<<< HEAD
@@ -111,10 +80,4 @@ vercel --prod
 =======
 - [Your Name]: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.
 >>>>>>> f93578052e3490c61cc63b743563aebe0d850995
-<p align="center">
-  <img src="./assets/chat-view-1.png" alt="Blackboard Interaction" width="300" />
-  <img src="./assets/chat-view-2.png" alt="Genie Response" width="300" />
-</p>
-<p align="center">
-  <img src="./assets/lamp-home.png" alt="Genie Lamp Home Screen" width="300" />
-</p>
+

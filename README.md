@@ -76,8 +76,7 @@ https://i-need-attention-5yd7.vercel.app/
 
 ## Team Contributions
 <<<<<<< HEAD
-- [Your Name]: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.
+- ASWATHI THUMMARUKUDY: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.
 =======
-- [Your Name]: Full-stack build — frontend UI/UX, camera capture, Groq API integration, personality system, timer/unlock logic, text-to-speech, custom animated eye rig.
->>>>>>> f93578052e3490c61cc63b743563aebe0d850995
+
 

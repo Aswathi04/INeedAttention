@@ -15,9 +15,9 @@ const appState = {
 };
 
 const farewellLines = [
-  "Poof. Your three minutes are up, genie. The objects have gone back to ignoring you.",
-  "Time's up! The furniture has nothing more to say to you. For now.",
-  "And... you're just a regular human again. The bench doesn't even remember your name.",
+  "Poof. The room stops talking. It was fun while it lasted.",
+  "Time's up — the walls have said all they're saying today.",
+  "And just like that, you're back to being ignored by inanimate objects.",
 ];
 
 // ---- DOM refs ----

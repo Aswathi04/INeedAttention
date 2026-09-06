@@ -1,20 +1,20 @@
 /* ========================================================================
    GENIE LAMP — design tokens
-   Deep indigo night + lamp gold, with a teal "magic smoke" accent reserved
+    Deep espresso night + antique gold, with a warm shimmer accent reserved
    for active-power states. One recurring motif — the glow behind the lamp —
    carries across all three screens instead of separate decoration each time.
    ======================================================================== */
 
 :root {
-  --ink: #140b29;
-  --ink-raised: #231646;
-  --ink-raised-2: #2c1c56;
-  --gold: #e3a83b;
-  --gold-bright: #f6c868;
-  --smoke: #54d3c2;
+  --ink: #1c130a;
+  --ink-raised: #2e2013;
+  --ink-raised-2: #3f2c1a;
+  --gold: #d4a017;
+  --gold-bright: #f4c542;
+  --smoke: #e8c874;
   --parchment: #f4e8cc;
-  --dim: #b6a6d6;
-  --jewel: #c23b6c;
+  --dim: #c9b896;
+  --jewel: #a8324f;
   --danger: #e3653b;
 
   --font-header: "Rakkas", Georgia, serif;
@@ -83,8 +83,8 @@ button {
   pointer-events: none;
   background: radial-gradient(
     circle at 50% 62%,
-    rgba(227, 168, 59, 0.35),
-    rgba(227, 168, 59, 0.08) 45%,
+    rgba(212, 160, 23, 0.35),
+    rgba(212, 160, 23, 0.08) 45%,
     transparent 70%
   );
   filter: blur(2px);
@@ -94,8 +94,8 @@ button {
 .glow--bright {
   background: radial-gradient(
     circle at 50% 55%,
-    rgba(246, 200, 104, 0.55),
-    rgba(84, 211, 194, 0.18) 40%,
+    rgba(244, 197, 66, 0.55),
+    rgba(232, 200, 116, 0.18) 40%,
     transparent 72%
   );
   animation-duration: 2.2s;
@@ -103,7 +103,7 @@ button {
 
 .glow--soft {
   opacity: 0.35;
-  background: radial-gradient(circle at 50% 20%, rgba(84, 211, 194, 0.3), transparent 60%);
+  background: radial-gradient(circle at 50% 20%, rgba(232, 200, 116, 0.3), transparent 60%);
 }
 
 @keyframes glow-breathe {
@@ -152,7 +152,7 @@ button {
 .lamp-svg {
   width: 220px;
   height: auto;
-  filter: drop-shadow(0 0 22px rgba(227, 168, 59, 0.45));
+  filter: drop-shadow(0 0 22px rgba(212, 160, 23, 0.45));
 }
 
 .lamp-shadow {
@@ -315,7 +315,7 @@ button {
   font-size: 1.1rem;
   color: var(--gold-bright);
   background: rgba(20, 11, 41, 0.55);
-  border: 1px solid rgba(227, 168, 59, 0.4);
+  border: 1px solid rgba(212, 160, 23, 0.4);
   border-radius: 999px;
   padding: 6px 14px;
   font-variant-numeric: tabular-nums;
@@ -357,7 +357,7 @@ button {
   height: 64px;
   border-radius: 50%;
   border: 2px solid var(--gold-bright);
-  background: rgba(227, 168, 59, 0.15);
+  background: rgba(212, 160, 23, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -366,7 +366,7 @@ button {
 
 .capture-btn:active {
   transform: translateX(-50%) scale(0.92);
-  background: rgba(227, 168, 59, 0.35);
+  background: rgba(212, 160, 23, 0.35);
 }
 
 .capture-ring {
@@ -573,7 +573,7 @@ button {
   gap: 10px;
   padding: 32px;
   text-align: center;
-  background: radial-gradient(circle at 50% 45%, rgba(84, 211, 194, 0.18), var(--ink) 70%);
+  background: radial-gradient(circle at 50% 45%, rgba(232, 200, 116, 0.18), var(--ink) 70%);
 }
 
 .farewell-overlay.farewell-overlay--visible {
@@ -679,8 +679,8 @@ input:focus-visible {
   color: var(--gold-bright);
   font-family: var(--font-subheader);
   font-size: 1.1rem;
-  background: rgba(227, 168, 59, 0.12);
-  border: 1px solid rgba(227, 168, 59, 0.3);
+  background: rgba(212, 160, 23, 0.12);
+  border: 1px solid rgba(212, 160, 23, 0.3);
   border-radius: 999px;
   padding: 4px 14px;
 }
@@ -694,7 +694,7 @@ input:focus-visible {
   max-width: 80%;
   text-align: center;
   background: rgba(20, 11, 41, 0.75);
-  border: 1px solid rgba(246, 200, 104, 0.35);
+  border: 1px solid rgba(244, 197, 66, 0.35);
   border-radius: 999px;
   padding: 8px 16px;
   font-size: 0.9rem;
@@ -722,8 +722,8 @@ input:focus-visible {
 }
 
 @keyframes capture-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(246, 200, 104, 0.5); }
-  50% { box-shadow: 0 0 0 10px rgba(246, 200, 104, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(244, 197, 66, 0.5); }
+  50% { box-shadow: 0 0 0 10px rgba(244, 197, 66, 0); }
 }
 
 /* Small button/bubble feedback that was missing */
